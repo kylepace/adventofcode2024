@@ -101,7 +101,7 @@ public class DayOneTests
         Assert.AreEqual(exampleSimilarity, elegantSimilarity);
     }
 
-    [Test]
+  [Test]
     public async Task SimilarityDayOneInputTest()
     {
         var (list1, list2) = await ListDistanceCalculator.ParseInputIntoListsRookieAsync(@"DayOne/DayOneInput.txt");
