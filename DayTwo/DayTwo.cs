@@ -5,7 +5,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using NUnit.Framework;
 
-namespace AdventOfCode2024.DayOne;
+namespace AdventOfCode2024.DayTwo;
 
 public class ReportAnalyzer
 {
