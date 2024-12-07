@@ -1,5 +1,4 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -8,7 +7,7 @@ using NUnit.Framework;
 
 public static class ManualOrderer
 {
-    public static (IEnumerable<IEnumerable<int>>, IEnumerable<IEnumerable<int>>) ParseInstructions(string ins)
+    public static (IEnumerable<IEnumerable<int>> rules, IEnumerable<IEnumerable<int>> updates) ParseInstructions(string ins)
     {
         var lines = ins.Split(Environment.NewLine);
         var rules = lines
@@ -22,43 +21,80 @@ public static class ManualOrderer
         return (rules, updates);    
     }
 
-    public static int FindMiddlePageSum(string input)
+    public static (bool valid, IEnumerable<(int, int)> toSwap) IsValid(IEnumerable<IEnumerable<int>> rules, IEnumerable<int> update)
     {
-        var parsed = ParseInstructions(input);
-        var rules = parsed.Item1;
-        var validUpdates = new List<IEnumerable<int>>();
-
-        foreach (var update in parsed.Item2)
+        var visited = new List<int>();
+        var valid = true;
+        var fixes = new List<(int, int)>();
+        foreach (var page in update)
         {
-            var visited = new List<int>();
-            var valid = true;
-            foreach (var page in update)
+            if (!visited.Contains(page))
             {
-                if (!visited.Contains(page))
-                {
-                    visited.Add(page);
-                }
-                
-                var foundRules = rules.Where(r => r.Last() == page);
-                if (foundRules.Any())
-                {
-                    foreach (var foundRule in foundRules)
-                    {
-                        if (update.Contains(foundRule.First()) && !visited.Contains(foundRule.First()))
-                        {
-                            valid = false;
-                        }
-                    }
-                }
+                visited.Add(page);
             }
-
-            if (valid)
+            
+            var foundRules = rules.Where(r => r.Last() == page);
+            
+            foreach (var foundRule in foundRules)
             {
-                validUpdates.Add(update);
+                if (update.Contains(foundRule.First()) && !visited.Contains(foundRule.First()))
+                {
+                    fixes.Add((foundRule.First(), page));
+                    valid = false;
+                }
             }
         }
 
-        return validUpdates.Select(vu => vu.ElementAt(vu.Count() / 2)).Sum();
+        return (valid, fixes);
+    }
+
+    public static IEnumerable<int> FixUpdate(IEnumerable<IEnumerable<int>> rules, IList<int> update, IEnumerable<(int, int)> toSwap)
+    {
+        foreach (var swap in toSwap)
+        {
+            var firstIndex = update.IndexOf(swap.Item1);
+            var secondIndex = update.IndexOf(swap.Item2);
+            update[firstIndex] = swap.Item2;
+            update[secondIndex] = swap.Item1;
+        }
+
+        var isValid = IsValid(rules, update);
+
+        return isValid.valid ? update : FixUpdate(rules, update, isValid.toSwap.Take(1));
+    }
+
+    public static (IEnumerable<IEnumerable<int>> validUpdates, IEnumerable<IEnumerable<int>> invalidUpdates)
+        Classify(IEnumerable<IEnumerable<int>> rules, IEnumerable<IEnumerable<int>> potentialUpdates)
+    {
+        var validUpdates = new List<IEnumerable<int>>();
+        var invalidUpdates = new List<IEnumerable<int>>();
+
+        foreach (var update in potentialUpdates)
+        {
+            var isValid = IsValid(rules, update);
+
+            if (isValid.valid)
+            {
+                validUpdates.Add(update);
+            }
+            else
+            {
+                invalidUpdates.Add(FixUpdate(rules, update.ToList(), isValid.toSwap));
+            }
+        }
+
+        return (validUpdates, invalidUpdates);
+    }
+
+    public static (int validSums, int invalidSums) FindMiddlePageSum(string input)
+    {
+        var (rules, updates) = ParseInstructions(input);
+        
+        var (validUpdates, invalidUpdates) = Classify(rules, updates);
+
+        return (
+            validUpdates.Select(vu => vu.ElementAt(vu.Count() / 2)).Sum(),
+            invalidUpdates.Select(vu => vu.ElementAt(vu.Count() / 2)).Sum());
     }
 }
 
@@ -105,11 +141,13 @@ public class DayFiveTests
     [Test]
     public void FirstExampleTest()
     {
-        var expected = 143;
+        var validExpected = 143;
+        var invalidExpected = 123;
 
         var actual = ManualOrderer.FindMiddlePageSum(_example);
 
-        Assert.AreEqual(expected, actual);
+        Assert.AreEqual(validExpected, actual.validSums);
+        Assert.AreEqual(invalidExpected, actual.invalidSums);
     }
 
     [Test]
@@ -118,7 +156,8 @@ public class DayFiveTests
         var fileInput = await File.ReadAllTextAsync(@"DayFive/DayFiveInput.txt");
         
         var result = ManualOrderer.FindMiddlePageSum(fileInput);
-
-        Assert.NotNull(result);
+        
+        Assert.AreEqual(4609, result.validSums);
+        Assert.AreEqual(5723, result.invalidSums);
     }
 }
