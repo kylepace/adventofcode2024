@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>net8.0</TargetFramework>
+    <TargetFramework>net9.0</TargetFramework>
     <Nullable>enable</Nullable>
     <RootNamespace>AdventOfCode2024</RootNamespace>
     <IsPackable>false</IsPackable>
@@ -20,5 +20,6 @@
     <None Update="DayThree\DayThreeInput.txt" CopyToOutputDirectory="PreserveNewest" />
     <None Update="DayFour\DayFourInput.txt" CopyToOutputDirectory="PreserveNewest" />
     <None Update="DayFive\DayFiveInput.txt" CopyToOutputDirectory="PreserveNewest" />
+    <None Update="DaySix\DaySixInput.txt" CopyToOutputDirectory="PreserveNewest" />
   </ItemGroup>
 </Project>
