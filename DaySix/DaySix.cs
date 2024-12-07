@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
@@ -30,11 +31,12 @@ public static class GuardMapper
         (dir == 'R' && y + 1 == area[x].Length) ||
         (dir == 'L' && y == 0);
 
-    public static void PlotCourse(char[][] area, char dir, int x, int y)
+    public static bool PlotCourse(char[][] area, char dir, int x, int y)
     {
         var stuck = false;
-        
-        while (!stuck)
+        var stepsTaken = 0;
+        var maxStepsTaken = 50000;
+        while (!stuck && stepsTaken < maxStepsTaken)
         {
             area[x][y] = 'X';
             if (LeavingMap(area, dir, x, y))
@@ -91,7 +93,10 @@ public static class GuardMapper
                     x--;
                 }
             }
+            stepsTaken++;
         }
+        
+        return stepsTaken == maxStepsTaken;
     }
 
     public static int CountChars(char[][] area, char toCount) =>
@@ -104,6 +109,44 @@ public static class GuardMapper
         PlotCourse(area, 'U', x, y);
 
         return CountChars(area, 'X');
+    }
+
+    public static IEnumerable<char[][]> GenerateBoards(char[][] area)
+    {
+        var toReturn = new List<char[][]>();
+        for (var i = 0; i < area.Length; i++)
+        {
+            for (var j = 0; j < area[i].Length; j++)
+            {
+                if (area[i][j] == '.')
+                {
+                    var board = area.Select(c => (char[])c.Clone()).ToArray();
+                    board[i][j] = '#';
+                    toReturn.Add(board);
+                }
+            }
+        }
+
+        return toReturn;
+    }
+
+    public static int CountParadoxes(char[][] area)
+    {
+        var (x, y) = FindStart(area);
+        // generate board for all combinations or maybe in loop if mem gets blown out
+        var boardsToCheck = GenerateBoards(area);
+        var count = 0;
+        foreach (var board in boardsToCheck)
+        {
+            var loopedOut = PlotCourse(board, 'U', x, y);
+            if (loopedOut)
+            {
+                count++;
+            }
+        }
+        
+        return count;
+
     }
 }
 
@@ -140,6 +183,29 @@ public class DaySixTests
     }
 
     [Test]
+    public void PartTwoInfiniteLoopCheck()
+    {
+        var puzzleInput = @"....#.....
+.........#
+..........
+..#.......
+.......#..
+..........
+.#.#^.....
+........#.
+#.........
+......#...";
+
+        var puzzleArea = puzzleInput.Split(Environment.NewLine).Select(f => f.ToArray()).ToArray();
+
+        var (x, y) = GuardMapper.FindStart(puzzleArea);
+
+        var timedOut = GuardMapper.PlotCourse(puzzleArea, 'U', x, y);
+
+        Assert.IsTrue(timedOut);
+    }
+
+    [Test]
     public void PartTwoExampleTest()
     {
         var puzzleInput = @"....#.....
@@ -153,7 +219,19 @@ public class DaySixTests
 #.........
 ......#...";
         var puzzleArea = puzzleInput.Split(Environment.NewLine).Select(f => f.ToArray()).ToArray();
-        var totalSteps = GuardMapper.CountSteps(puzzleArea);
+        var totalSteps = GuardMapper.CountParadoxes(puzzleArea);
         Assert.AreEqual(6, totalSteps);
+    }
+
+    [Test]
+    public async Task PartTwoInputTest()
+    {
+        var fileInput = await File.ReadAllTextAsync(@"DaySix/DaySixInput.txt");
+
+        var puzzleArea = fileInput.Split(Environment.NewLine).Select(f => f.ToArray()).ToArray();
+
+        var totalSteps = GuardMapper.CountParadoxes(puzzleArea);
+
+        Assert.AreEqual(1697, totalSteps);
     }
 }
