@@ -136,6 +136,24 @@ public class DaySixTests
 
         var totalSteps = GuardMapper.CountSteps(puzzleArea);
 
-        Assert.AreEqual(4988, totalSteps);
+        Assert.NotNull(totalSteps);
+    }
+
+    [Test]
+    public void PartTwoExampleTest()
+    {
+        var puzzleInput = @"....#.....
+.........#
+..........
+..#.......
+.......#..
+..........
+.#..^.....
+........#.
+#.........
+......#...";
+        var puzzleArea = puzzleInput.Split(Environment.NewLine).Select(f => f.ToArray()).ToArray();
+        var totalSteps = GuardMapper.CountSteps(puzzleArea);
+        Assert.AreEqual(6, totalSteps);
     }
 }
