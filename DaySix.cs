@@ -5,7 +5,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using NUnit.Framework;
 
-namespace AdventOfCode2024.DaySix;
+namespace AdventOfCode2024;
 
 public static class GuardMapper
 {
@@ -172,7 +172,7 @@ public class DaySixTests
     [Test]
     public async Task InputTest()
     {
-        var fileInput = await File.ReadAllTextAsync(@"DaySix/DaySixInput.txt");
+        var fileInput = await File.ReadAllTextAsync(@"Input/DaySixInput.txt");
 
         var puzzleArea = fileInput.Split(Environment.NewLine).Select(f => f.ToArray()).ToArray();
 
@@ -225,7 +225,7 @@ public class DaySixTests
     [Test, Ignore("Takes 2.5 seconds.")]
     public async Task PartTwoInputTest()
     {
-        var fileInput = await File.ReadAllTextAsync(@"DaySix/DaySixInput.txt");
+        var fileInput = await File.ReadAllTextAsync(@"Input/DaySixInput.txt");
 
         var puzzleArea = fileInput.Split(Environment.NewLine).Select(f => f.ToArray()).ToArray();
 

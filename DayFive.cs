@@ -5,6 +5,8 @@ using System.Linq;
 using System.Threading.Tasks;
 using NUnit.Framework;
 
+namespace AdventOfCode2024;
+
 public static class ManualOrderer
 {
     public static (IEnumerable<IEnumerable<int>> rules, IEnumerable<IEnumerable<int>> updates) ParseInstructions(string ins)
@@ -153,7 +155,7 @@ public class DayFiveTests
     [Test, Ignore("Too slow.")]
     public async Task FirstTest()
     {
-        var fileInput = await File.ReadAllTextAsync(@"DayFive/DayFiveInput.txt");
+        var fileInput = await File.ReadAllTextAsync(@"Input/DayFiveInput.txt");
         
         var result = ManualOrderer.FindMiddlePageSum(fileInput);
         

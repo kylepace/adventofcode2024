@@ -13,14 +13,11 @@
     <PackageReference Include="NUnit3TestAdapter" Version="4.0.0" />
     <PackageReference Include="coverlet.collector" Version="3.1.0" />
   </ItemGroup>
-  
+
   <ItemGroup>
-    <None Update="DayOne\DayOneInput.txt" CopyToOutputDirectory="PreserveNewest" />
-    <None Update="DayTwo\DayTwoInput.txt" CopyToOutputDirectory="PreserveNewest" />
-    <None Update="DayThree\DayThreeInput.txt" CopyToOutputDirectory="PreserveNewest" />
-    <None Update="DayFour\DayFourInput.txt" CopyToOutputDirectory="PreserveNewest" />
-    <None Update="DayFive\DayFiveInput.txt" CopyToOutputDirectory="PreserveNewest" />
-    <None Update="DaySix\DaySixInput.txt" CopyToOutputDirectory="PreserveNewest" />
-    <None Update="DaySeven\DaySevenInput.txt" CopyToOutputDirectory="PreserveNewest" />
+    <Content Include="Input\**\*.*">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
   </ItemGroup>
+  
 </Project>

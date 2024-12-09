@@ -4,7 +4,7 @@ using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using NUnit.Framework;
 
-namespace AdventOfCode2024.DayThree;
+namespace AdventOfCode2024;
 
 public partial class CorruptedMultiplier
 {
@@ -71,7 +71,7 @@ public class DayThreeTests
     [Test]
     public async Task CorruptedInputTest()
     {
-        var fileInput = await File.ReadAllTextAsync(@"DayThree/DayThreeInput.txt");
+        var fileInput = await File.ReadAllTextAsync(@"Input/DayThreeInput.txt");
 
         var result = CorruptedMultiplier.MultiplyValidEntries(fileInput);
 
@@ -91,7 +91,7 @@ public class DayThreeTests
     [Test]
     public async Task DoAndDontInputTest()
     {
-        var fileInput = await File.ReadAllTextAsync(@"DayThree/DayThreeInput.txt");
+        var fileInput = await File.ReadAllTextAsync(@"Input/DayThreeInput.txt");
 
         var result = CorruptedMultiplier.MultiplyWithDoAndDont(fileInput);
 

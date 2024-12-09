@@ -5,7 +5,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using NUnit.Framework;
 
-namespace AdventOfCode2024.DayOne;
+namespace AdventOfCode2024;
 
 public class ListDistanceCalculator
 {
@@ -65,7 +65,7 @@ public class DayOneTests
     [Test]
     public async Task DistanceDayOneInputTest()
     {
-        var (list1, list2) = await ListDistanceCalculator.ParseInputIntoListsRookieAsync(@"DayOne/DayOneInput.txt");
+        var (list1, list2) = await ListDistanceCalculator.ParseInputIntoListsRookieAsync(@"Input/DayOneInput.txt");
 
         var distanceRookie = ListDistanceCalculator.FindDistanceRookie(list1, list2);
         var distanceElegant = ListDistanceCalculator.FindDistanceElegant(list1, list2);
@@ -104,7 +104,7 @@ public class DayOneTests
   [Test]
     public async Task SimilarityDayOneInputTest()
     {
-        var (list1, list2) = await ListDistanceCalculator.ParseInputIntoListsRookieAsync(@"DayOne/DayOneInput.txt");
+        var (list1, list2) = await ListDistanceCalculator.ParseInputIntoListsRookieAsync(@"Input/DayOneInput.txt");
 
         var similarityRookie = ListDistanceCalculator.FindSimilarityScoreRookie(list1, list2);
         var similarityElegant = ListDistanceCalculator.FindSimilarityScoreElegant(list1, list2);

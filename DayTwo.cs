@@ -5,7 +5,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using NUnit.Framework;
 
-namespace AdventOfCode2024.DayTwo;
+namespace AdventOfCode2024;
 
 public class ReportAnalyzer
 {
@@ -98,7 +98,7 @@ public class DayTwoTests
     [Test]
     public async Task ReportInputTest()
     {
-        var report = await ReportAnalyzer.ParseInputIntoReportAsync(@"DayTwo/DayTwoInput.txt");
+        var report = await ReportAnalyzer.ParseInputIntoReportAsync(@"Input/DayTwoInput.txt");
 
         var result = ReportAnalyzer.CountSafeLevels(report);
 
@@ -128,7 +128,7 @@ public class DayTwoTests
     [Test]
     public async Task ReportWithDampenerInputTest()
     {
-        var report = await ReportAnalyzer.ParseInputIntoReportAsync(@"DayTwo/DayTwoInput.txt");
+        var report = await ReportAnalyzer.ParseInputIntoReportAsync(@"Input/DayTwoInput.txt");
 
         var safeLevelCount = ReportAnalyzer.CountSafeLevelsWithDampener(report);
 

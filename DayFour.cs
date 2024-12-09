@@ -4,7 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using NUnit.Framework;
 
-namespace AdventOfCode2024.DayFour;
+namespace AdventOfCode2024;
 
 public static class XmasCrosswordParser
 {
@@ -123,7 +123,7 @@ MXMXAXMASX";
     [Test]
     public async Task CrosswordInputTest()
     {
-        var fileInput = await File.ReadAllTextAsync(@"DayFour/DayFourInput.txt");
+        var fileInput = await File.ReadAllTextAsync(@"Input/DayFourInput.txt");
 
         var puzzle = XmasCrosswordParser.Parse(fileInput);
 
@@ -157,7 +157,7 @@ MXMXAXMASX";
     [Test]
     public async Task CrosswordX_MasInputTest()
     {
-        var fileInput = await File.ReadAllTextAsync(@"DayFour/DayFourInput.txt");
+        var fileInput = await File.ReadAllTextAsync(@"Input/DayFourInput.txt");
 
         var puzzle = XmasCrosswordParser.Parse(fileInput);
 

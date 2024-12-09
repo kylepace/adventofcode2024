@@ -5,7 +5,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using NUnit.Framework;
 
-namespace AdventOfCode2024.DaySeven;
+namespace AdventOfCode2024;
 
 public class BridgeRepair
 {
@@ -78,7 +78,7 @@ public class DaySevenTests
     [Test]
     public async Task FirstInputTest()
     {
-        var fileInput = await File.ReadAllTextAsync(@"DaySeven/DaySevenInput.txt");
+        var fileInput = await File.ReadAllTextAsync(@"Input/DaySevenInput.txt");
         
         var parsed = BridgeRepair.ParseInput(fileInput);
 
@@ -110,7 +110,7 @@ public class DaySevenTests
     [Test, Ignore("slow - 3s")]
     public async Task SecondInputTest()
     {
-        var fileInput = await File.ReadAllTextAsync(@"DaySeven/DaySevenInput.txt");
+        var fileInput = await File.ReadAllTextAsync(@"Input/DaySevenInput.txt");
         
         var parsed = BridgeRepair.ParseInput(fileInput);
 
