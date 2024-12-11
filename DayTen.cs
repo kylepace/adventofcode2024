@@ -49,11 +49,14 @@ public class DayTenTests
     public int ScoreTrail(int[][] mtn, int x, int y) =>
         FindTrails(mtn, x, y).Where(i => i.HasValue).Distinct().Count();
 
-    public int ScoreTrails(string trailheads)
+    public int RateTrail(int[][] mtn, int x, int y) =>
+        FindTrails(mtn, x, y).Where(i => i.HasValue).Count();
+
+    public (int score, int rating) ScoreTrails(string trailheads)
     {
         var mtn = ParseTrail(trailheads);
 
-        var trailScores = new List<int>();
+        var trailScores = new List<(int score, int rating)>();
 
         for (var i = 0; i < mtn.Length; i++)
         {
@@ -61,12 +64,12 @@ public class DayTenTests
             {
                 if (mtn[i][j] == 0)
                 {
-                    trailScores.Add(ScoreTrail(mtn, i, j));
+                    trailScores.Add((ScoreTrail(mtn, i, j), RateTrail(mtn, i, j)));
                 }
             }
         }
     
-        return trailScores.Sum();
+        return (trailScores.Sum(i => i.score), trailScores.Sum(i => i.rating));
     }
 
     [Test]
@@ -83,7 +86,9 @@ public class DayTenTests
 
         var trailheadScore = ScoreTrails(terrain);
 
-        Assert.AreEqual(36, trailheadScore);
+        Assert.AreEqual(36, trailheadScore.score);
+
+        Assert.AreEqual(81, trailheadScore.rating);
     }
 
     [Test]
@@ -93,6 +98,7 @@ public class DayTenTests
 
         var trailheadScore = ScoreTrails(fileInput);
 
-        Assert.NotNull(trailheadScore);
+        Assert.NotNull(trailheadScore.score);
+        Assert.NotNull(trailheadScore.rating);
     }
 }
