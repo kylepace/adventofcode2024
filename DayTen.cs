@@ -19,7 +19,7 @@ public class DayTenTests
 
         if (el == 9)
         {
-            return new List<(int, int)?> { (x, y) };
+            return [(x, y)];
         }
 
         var acc = new List<(int, int)?>();
