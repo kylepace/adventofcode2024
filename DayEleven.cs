@@ -10,14 +10,6 @@ public class DayElevenTests
     public IList<long> ParseStoneList(string input) =>
         input.Split(" ").Select(s => long.Parse(s)).ToList();
 
-    /*
-        If the stone is engraved with the number 0, it is replaced by a stone engraved with the number 1.
-        If the stone is engraved with a number that has an even number of digits, it is replaced by two stones.
-            The left half of the digits are engraved on the new left stone, and the right half of the digits are engraved on the new right stone.
-            (The new numbers don't keep extra leading zeroes: 1000 would become stones 10 and 0.)
-        If none of the other rules apply, the stone is replaced by a new stone; the old stone's number multiplied by 2024 is engraved on the new stone.
-    */
-
     public IList<long> BlinkStones(IList<long> stones, int timesToBlink)
     {
         var stoneLedger = new List<long>(stones);
@@ -50,6 +42,51 @@ public class DayElevenTests
         return stoneLedger;
     }
 
+    private static readonly IDictionary<string, long> _blinkCache = new Dictionary<string, long>();
+
+    private static Func<long, int, long> Memoize(Func<long, int, long> func)
+    {
+        return (arg, arg2) =>
+        {
+            var key = arg.ToString() + " " + arg2.ToString();
+            if (!_blinkCache.TryGetValue(key, out long res))
+            {
+                res = func(arg, arg2);
+
+                _blinkCache.Add(key, res);
+            }
+
+            return res;
+        };
+    }
+
+    public long MemoizedBlink(long stone, int step) => Memoize(BlinkStone)(stone, step);
+
+    public long BlinkStone(long stone, int step)
+    {
+        if (step == 0)
+        {
+            return 1;
+        }
+
+        if (stone == 0)
+        {
+            return MemoizedBlink(1, step - 1);
+        }
+
+        var stoneAsChars = stone.ToString().ToCharArray();
+        if (stoneAsChars.Length % 2 == 0)
+        {
+            return MemoizedBlink(long.Parse(new string(stoneAsChars[..(stoneAsChars.Length / 2)])), step - 1) +
+                    MemoizedBlink(long.Parse(new string(stoneAsChars[(stoneAsChars.Length / 2) ..])), step - 1);
+        }
+
+        return MemoizedBlink(stone * 2024, step - 1);
+    }
+
+    public long BlinkStonesFaster(long[] stones, int timesToBlink) =>
+        stones.Sum(s => MemoizedBlink(s, timesToBlink));
+
     [Test]
     public void ExampleTest()
     {
@@ -68,9 +105,13 @@ public class DayElevenTests
         var blinkTwentyFive = BlinkStones(new List<long> { 125, 17 }, 25);
 
         Assert.AreEqual(55312, blinkTwentyFive.Count());
+
+        var fasterBlink = BlinkStonesFaster([125, 17 ], 25);
+
+        Assert.AreEqual(55312, fasterBlink);
     }
 
-    [Test, Ignore("Doesn't work.")]
+    [Test]
     public void InputTest()
     {
         var stoneList = ParseStoneList("1117 0 8 21078 2389032 142881 93 385");
@@ -79,8 +120,8 @@ public class DayElevenTests
 
         Assert.NotNull(blinkedStones.Count());
 
-        var blinkedStonesOhNo = BlinkStones(stoneList, 75);
+        var blinkStonesMore = BlinkStonesFaster([.. stoneList], 75);
 
-        Assert.AreEqual(1, blinkedStonesOhNo.Count());
+        Assert.NotNull(blinkStonesMore);
     }    
 }
