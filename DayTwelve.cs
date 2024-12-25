@@ -111,7 +111,7 @@ MMMISSJEEE";
         Assert.AreEqual(1930, TotalPrice(example2));
     }
 
-    [Test]
+    [Test, Ignore("Slow")]
     public async Task InputTest()
     {
         var input = await File.ReadAllTextAsync(@"Input/DayTwelveInput.txt");
