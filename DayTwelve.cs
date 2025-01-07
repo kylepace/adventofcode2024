@@ -14,8 +14,8 @@ public class DayTwelveTests
         puzzle.Split(Environment.NewLine).Select(s => s.ToArray()).ToArray();
 
     public record Point(int X, int Y);
-    public IList<Point> Directions = [new Point(-1, 0), new Point(1, 0), new Point(0, -1), new Point(0, 1)];
-
+    public IList<Point> Directions = [new Point(0, 1), new Point(1, 0), new Point(0, -1), new Point(-1, 0)];
+    
     public void MapRegion(char[][] garden, IList<Point> region, List<Point> visited, int r, int c)
     {
         var point = new Point(r, c);
@@ -38,7 +38,7 @@ public class DayTwelveTests
         }
     }
 
-    public long TotalPrice(string input)
+    public (long total, long discount) TotalPrice(string input)
     {
         var garden = Parse(input);
         var visited = new List<Point>();
@@ -76,7 +76,68 @@ public class DayTwelveTests
             total += region.Count * tot;
         }
 
-        return total;
+        var discount = 0;
+
+        foreach (var region in regions)
+        {
+            var tot = 0;
+            foreach (var point in region)
+            {
+                var up = new Point(point.X - 1, point.Y);
+                var down = new Point(point.X + 1, point.Y);
+                var left = new Point(point.X, point.Y - 1);
+                var right = new Point(point.X, point.Y + 1);
+
+                if (!region.Any(p => p == up) && !region.Any(p => p == right))
+                {
+                    tot++;
+                }
+
+                if (!region.Any(p => p == right) && !region.Any(p => p == down))
+                {
+                    tot++;
+                }
+                
+                if (!region.Any(p => p == down) && !region.Any(p => p == left))
+                {
+                    tot++;
+                }
+                
+                if (!region.Any(p => p == left) && !region.Any(p => p == up))
+                {
+                    tot++;
+                }
+
+                var upRight = new Point(point.X - 1, point.Y + 1);
+                var downRight = new Point(point.X + 1, point.Y + 1);
+                var downLeft = new Point(point.X + 1, point.Y - 1);
+                var upLeft = new Point(point.X - 1, point.Y - 1);
+
+                if (region.Any(p => p == up) && region.Any(p => p == right) && !region.Any(p => p == upRight))
+                {
+                    tot++;
+                }
+                
+                if (region.Any(p => p == right) && region.Any(p => p == down) && !region.Any(p => p == downRight))
+                {
+                    tot++;
+                }
+                
+                if (region.Any(p => p == down) && region.Any(p => p == left) && !region.Any(p => p == downLeft))
+                {
+                    tot++;
+                }
+                
+                if (region.Any(p => p == left) && region.Any(p => p == up) && !region.Any(p => p == upLeft))
+                {
+                    tot++;
+                }
+            }
+
+            discount += tot * region.Count;
+        }
+
+        return (total, discount);
     }
 
     [Test]
@@ -87,7 +148,12 @@ BBCD
 BBCC
 EEEC";
 
-        Assert.AreEqual(140, TotalPrice(example));
+        var exampleSol = TotalPrice(example);
+        Assert.AreEqual(140, exampleSol.total);
+
+        Assert.AreEqual(80, exampleSol.discount);
+
+        Console.WriteLine("--------");
 
         var example3 = @"OOOOO
 OXOXO
@@ -95,7 +161,9 @@ OOOOO
 OXOXO
 OOOOO";
 
-        Assert.AreEqual(772, TotalPrice(example3));
+        var example3Sol = TotalPrice(example3);
+        Assert.AreEqual(772, example3Sol.total);
+        Assert.AreEqual(436, example3Sol.discount);
 
         var example2 = @"RRRRIICCFF
 RRRRIICCCF
@@ -108,7 +176,8 @@ MIIIIIJJEE
 MIIISIJEEE
 MMMISSJEEE";
 
-        Assert.AreEqual(1930, TotalPrice(example2));
+        Assert.AreEqual(1930, TotalPrice(example2).total);
+        Assert.AreEqual(1206, TotalPrice(example2).discount);
     }
 
     [Test, Ignore("Slow")]
@@ -116,6 +185,8 @@ MMMISSJEEE";
     {
         var input = await File.ReadAllTextAsync(@"Input/DayTwelveInput.txt");
 
-        Assert.AreEqual(1450816, TotalPrice(input));
+        var inputSol = TotalPrice(input);
+        Assert.AreEqual(1450816, inputSol.total);
+        Assert.AreEqual(865662, inputSol.discount);
     }
 }
